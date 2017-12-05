@@ -15,6 +15,7 @@ from pyspark.sql.functions import *
 sqlContext = conf = SparkConf().setAppName("the apache sparksql")
 sc = SparkContext(conf=conf)
 sqlContext = SQLContext(sc)
+sc.setLogLevel("WARN")
 
 l = [("zhangfei",1),("guanyu",33)]
 row = sqlContext.createDataFrame(l).collect()
@@ -78,8 +79,8 @@ print(row)
 # -------------------------------------------------------
 df_as1 = df.alias("df_as1")
 df_as2 = df.alias("df_as2")
-joined_df = df_as1.join(df_as2, col("df_as1.name") == col("df_as2.name"), 'inner')
-row = joined_df.select(col("df_as1.name"), col("df_as2.name"), col("df_as2.age")).collect()
+joined_df = df_as1.join(df_as2, df_as1.name == df_as2.name, 'inner')
+row = joined_df.select(df_as1.name, df_as2.name, df_as2.age).collect()
 print(".................................................... the other function 2 collect .......................")
 print(row)
 # -------------------------------------------------------
@@ -173,7 +174,8 @@ df2 = sqlContext.sql("select * from people")
 print(sorted(df.collect()) == sorted(df2.collect()))
 # -------------------------------------------------------
 print(".................................................... df.registerTempTable()  .......................")
-dataset = sqlContext.range(0, 100).select((col("id") % 3).alias("key"))
+# 代码运行到此出错了 ...... seed
+dataset = sqlContext.range(0, 100).select(("id" % 3).alias("key"))
 sampled = dataset.sampleBy("key", fractions={0: 0.1, 1: 0.2}, seed=0)
 sampled.groupBy("key").count().orderBy("key").show()
 # -------------------------------------------------------
