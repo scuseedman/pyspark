@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
-# author :lwd
+# author :seed
 # date :20170522
 # 来源于spark文档中的官方实例测试
 from pyspark import SparkContext,SparkConf
